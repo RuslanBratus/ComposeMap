@@ -11,6 +11,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -23,6 +28,9 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.composemap.R
 import com.example.composemap.presentation.screens.main.viewmodel.MapViewModel
+import com.example.composemap.ui.components.DrawerContent
+import com.example.composemap.ui.components.DrawerItemInfo
+import com.example.composemap.ui.navigation.nestedGraphs.MapGraph
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -35,13 +43,14 @@ import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 
-@OptIn(MapsComposeExperimentalApi::class)
+
+@OptIn(MapsComposeExperimentalApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
     viewModel: MapViewModel = hiltViewModel(),
-    navigateToAddMarker: (location: LatLng) -> Unit,
-    navigateToEditMarker: (markerId: Int) -> Unit
-) {
+    navigationGraph: MapGraph,
+    drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    ) {
     val locationPermissionGranted = viewModel.isLocationPermissionGranted.collectAsState()
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -55,53 +64,48 @@ fun MapScreen(
     val context = LocalContext.current
     val markers = viewModel.markers.collectAsState(null)
     viewModel.getMarkers(context)
-    val mapView = remember {
-        MapView(context)
-    }
-
-    val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current)
-
-    fun getLastKnownLocation() {
-        mFusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                //@TODO It works! Save location into variables and use them on button click
-                Log.e("WatchingSomeInfo", "location.latitude = ${location.latitude}")
-                Log.e("WatchingSomeInfo", "location.longitude = ${location.longitude}")
-            }
-        }
-    }
 
     fun checkAndRequestLocationPermission(context : Context, permission: String,
                                           launcher: ManagedActivityResultLauncher<String, Boolean>) {
         val permissionCheckResult = ContextCompat.checkSelfPermission(context, permission)
         if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
             viewModel.setLocationPermissionsGranted(true)
-            getLastKnownLocation()
         } else {
             launcher.launch(permission)
         }
     }
 
+//    ModalNavigationDrawer(
+//        drawerState = drawerState,
+//        drawerContent = {
+//            DrawerContent(
+//                drawerState = drawerState,
+//                menuItems = generateDrawerButtons(),
+//                defaultPick = ,
+//                onClick = )
+//        }) {
+//
+//    }
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (myLocationButton) = createRefs()
-        val tmp = GoogleMap(
+        GoogleMap(
             modifier = Modifier.fillMaxSize(),
             properties =  MapProperties(isMyLocationEnabled = locationPermissionGranted.value)
         ) {
-            Log.e("WatchingSomeInfo", "InsideMap!")
-            MapEffect() { map ->
-                setMapLongClick(map, navigateToAddMarker)
+            MapEffect { map ->
+                map.setOnMapLongClickListener { latLng ->
+                    navigationGraph.navigateToAddMarker(latLng)
+                }
             }
 
             markers.value?.forEach { markerUI ->
-                Log.e("LookAtTHeData", "We got marker = $markerUI")
                 Marker(
                     state = MarkerState(position = LatLng(markerUI.latitude, markerUI.longitude)),
                     title = markerUI.title,
                     snippet = markerUI.description,
                     icon = BitmapDescriptorFactory.fromBitmap(markerUI.imageBitmap),
                     onClick = {
-                        navigateToEditMarker(markerUI.id)
+                        navigationGraph.navigateToEditMarker(markerUI.id)
                         return@Marker true
                     }
                 )
@@ -135,11 +139,26 @@ fun MapScreen(
     }
 }
 
-private fun setMapLongClick(
-    map: GoogleMap,
-    navigateToAddMarker: (location : LatLng) -> Unit,
-) {
-    map.setOnMapLongClickListener { latLng ->
-        navigateToAddMarker(latLng)
-    }
-}
+//@TODO!
+//fun generateDrawerButtons(): List<DrawerItemInfo<Enum<*>>> {
+//    return arrayListOf(
+//        DrawerItemInfo(
+//            MainNavOption.HomeScreen,
+//            R.string.drawer_home,
+//            R.drawable.ic_home,
+//            R.string.drawer_home_description
+//        ),
+//        DrawerItemInfo(
+//            MainNavOption.SettingsScreen,
+//            R.string.drawer_settings,
+//            R.drawable.ic_settings,
+//            R.string.drawer_settings_description
+//        ),
+//        DrawerItemInfo(
+//            MainNavOption.AboutScreen,
+//            R.string.drawer_about,
+//            R.drawable.ic_info,
+//            R.string.drawer_info_description
+//        )
+//    )
+//}
