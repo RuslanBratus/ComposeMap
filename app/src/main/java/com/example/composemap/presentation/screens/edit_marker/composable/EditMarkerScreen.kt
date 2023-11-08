@@ -281,7 +281,7 @@ private fun ErrorContent(popBackStack: () -> Unit, throwable: Throwable) {
 }
 
 @Composable
-private fun LoadingContent() {
+fun LoadingContent() {
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading_animation))
     Box(
         modifier = Modifier.fillMaxSize(),

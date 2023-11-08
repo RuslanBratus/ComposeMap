@@ -1,10 +1,51 @@
 package com.example.composemap.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.composemap.R
+
+private val akaya_telivigala = FontFamily(
+    Font(R.font.akaya_telivigala, FontWeight.Normal)
+)
+
+private val antic = FontFamily(
+    Font(R.font.antic, FontWeight.Normal)
+)
+
+data class AppTypography(
+    val h1: TextStyle = TextStyle(
+        fontFamily = akaya_telivigala,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp
+    ),
+    val subtitle: TextStyle = TextStyle(
+        fontFamily = antic,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
+    val body: TextStyle = TextStyle(
+        fontFamily = antic,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
+    val button: TextStyle = TextStyle(
+        fontFamily = akaya_telivigala,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
+    val caption: TextStyle = TextStyle(
+        fontFamily = antic,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp
+    )
+)
+
+internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
 
 // Set of Material typography styles to start with
 val Typography = Typography(

@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">ComposeMap</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--Errors-->
+    <string name="oops_something_went_wrong">Oops, something went wrong</string>
+    <string name="error_location_is_turn_off">Seems you forgot to turn on location.</string>
+    <string name="error_no_access_to_location_granted">We need location permission to do this.</string>
+    <string name="error_no_access_to_location_granted_show_location">We need location permission to show your location</string>
+    <string name="error_impossible_route">Impossible to find route.</string>
+
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="pick_image">Pick image</string>
@@ -10,9 +16,18 @@
     <string name="title_can_not_be_empty">Title can not be empty</string>
     <string name="description_can_not_be_empty">Description can not be empty</string>
     <string name="select_image">Please, select image</string>
-    <string name="oops_something_went_wrong">Oops, something went wrong</string>
     <string name="marker_aded_successfully">Marker aded successfully!</string>
     <string name="marker_not_found">Error: Marker not found.</string>
     <string name="marker_edited_successfully">Marker edited successfully!</string>
     <string name="editing_marker">Editing marker</string>
+    <string name="error_no_locations">No locations saved</string>
+
+    <!--MainMapScreen-->
+    <string name="tab_list_title">List</string>
+    <string name="tab_settings_title">Settings</string>
+    <string name="label_search">Search</string>
+
+    <!--SettingsScreen-->
+    <string name="select_list_text_color">Select markers list text color</string>
+    <string name="place_not_found">Error: Place not found</string>
 </resources>
