@@ -16,7 +16,7 @@ class GetMarkersUseCase @Inject constructor(
         val markers = markersDao.getAllMarkers()
         return if (markers.isEmpty()) null
         else {
-            markers.map { it!!.toMarker() }
+            markers.map { it.toMarker() }
         }
     }
 }

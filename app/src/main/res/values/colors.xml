@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="app_color">#495d92</color>
     <color name="google_map_icons_color">#dde9ff</color>
+    <color name="gray_color">#808080</color>
 </resources>
